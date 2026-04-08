@@ -1,0 +1,226 @@
+/* DeepSkyn Custom Styles */
+
+:root {
+  --deepskyn-primary: #8b63d3;
+  --deepskyn-background: #fbf3fe;
+  --deepskyn-surface: #ece2f9;
+  --deepskyn-purple-light: #b89de6;
+  --deepskyn-purple-lighter: #d4c2f0;
+}
+
+/* Dark Mode Variables */
+.dark {
+  --deepskyn-background: #0a0a0f;
+  --deepskyn-surface: #1a1a2e;
+  --deepskyn-primary: #a78bdc;
+  --deepskyn-purple-light: #c4a9ec;
+}
+
+/* High Contrast Mode Variables */
+.high-contrast {
+  --deepskyn-primary: #6b3cc0;
+  --deepskyn-background: #ffffff;
+  --deepskyn-surface: #f5f5f5;
+  --deepskyn-purple-light: #8b63d3;
+}
+
+/* Dark mode background */
+.dark body,
+.dark .bg-\[\#fbf3fe\] {
+  background-color: #0a0a0f !important;
+}
+
+/* High contrast mode */
+.high-contrast * {
+  border-width: 2px !important;
+}
+
+.high-contrast button,
+.high-contrast a {
+  text-decoration: underline;
+}
+
+/* Glassmorphism effect */
+.glass-card {
+  background: rgba(236, 226, 249, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(139, 99, 211, 0.1);
+  box-shadow: 0 8px 32px rgba(139, 99, 211, 0.15);
+}
+
+.dark .glass-card {
+  background: rgba(26, 26, 46, 0.8);
+  border: 1px solid rgba(167, 139, 220, 0.2);
+  box-shadow: 0 8px 32px rgba(167, 139, 220, 0.1);
+}
+
+.high-contrast .glass-card {
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid rgba(107, 60, 192, 0.5);
+  box-shadow: 0 8px 32px rgba(107, 60, 192, 0.2);
+}
+
+.glass-card-light {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(139, 99, 211, 0.1);
+  box-shadow: 0 8px 32px rgba(139, 99, 211, 0.1);
+}
+
+.dark .glass-card-light {
+  background: rgba(26, 26, 46, 0.6);
+  border: 1px solid rgba(167, 139, 220, 0.15);
+}
+
+/* Glowing effect for buttons */
+.glow-button {
+  box-shadow: 0 0 20px rgba(139, 99, 211, 0.4), 0 0 40px rgba(139, 99, 211, 0.2);
+  transition: all 0.3s ease;
+}
+
+.glow-button:hover {
+  box-shadow: 0 0 30px rgba(139, 99, 211, 0.6), 0 0 60px rgba(139, 99, 211, 0.3);
+  transform: translateY(-2px);
+}
+
+.dark .glow-button {
+  box-shadow: 0 0 20px rgba(167, 139, 220, 0.5), 0 0 40px rgba(167, 139, 220, 0.3);
+}
+
+.dark .glow-button:hover {
+  box-shadow: 0 0 30px rgba(167, 139, 220, 0.7), 0 0 60px rgba(167, 139, 220, 0.4);
+}
+
+/* Gradient backgrounds */
+.gradient-purple {
+  background: linear-gradient(135deg, #8b63d3 0%, #b89de6 100%);
+}
+
+.gradient-purple-radial {
+  background: radial-gradient(circle at top, #8b63d3 0%, #b89de6 50%, #d4c2f0 100%);
+}
+
+.dark .gradient-purple-radial {
+  background: radial-gradient(circle at top, #1a1a2e 0%, #2a2a4e 50%, #3a3a6e 100%);
+}
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.sr-only.focus:not(:focus) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Focus visible styles for keyboard navigation */
+*:focus-visible {
+  outline: 2px solid var(--deepskyn-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.high-contrast *:focus-visible {
+  outline: 3px solid #000000;
+  outline-offset: 3px;
+}
+
+/* Smooth animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(139, 99, 211, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(139, 99, 211, 0.6);
+  }
+}
+
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.dark .pulse-glow {
+  animation: pulse-glow-dark 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow-dark {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(167, 139, 220, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(167, 139, 220, 0.7);
+  }
+}
+
+/* Loading spinner */
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 2s linear infinite;
+}
+
+/* Responsive text sizing */
+@media (max-width: 640px) {
+  :root {
+    --font-size: 14px;
+  }
+  
+  .text-5xl {
+    font-size: 2.5rem !important;
+  }
+  
+  .text-4xl {
+    font-size: 2rem !important;
+  }
+  
+  .text-3xl {
+    font-size: 1.75rem !important;
+  }
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
