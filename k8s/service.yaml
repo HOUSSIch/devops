@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: front-react-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: front-react
+  ports:
+    - port: 80
+      targetPort: 80

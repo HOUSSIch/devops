@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front-react
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: front-react
+  template:
+    metadata:
+      labels:
+        app: front-react
+    spec:
+      containers:
+        - name: front-react
+          image: houssich/front-react:latest
+          ports:
+            - containerPort: 80
