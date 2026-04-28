@@ -10,17 +10,28 @@ const __dirname = path.dirname(__filename)
 
 export default defineConfig({
   plugins: [
-    // React and Tailwind plugins
     react(),
     tailwindcss(),
   ],
+
   resolve: {
     alias: {
-      // Alias @ to the src directory
       '@': path.resolve(__dirname, './src'),
     },
   },
 
-  // File types to support raw imports
   assetsInclude: ['**/*.svg', '**/*.csv'],
+
+  // 🔥 AJOUT IMPORTANT POUR LES TESTS
+  test: {
+    environment: 'jsdom',        // simule navigateur
+    globals: true,              // permet d'utiliser describe/test sans import
+    setupFiles: './src/setupTests.ts',
+
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html', 'lcov'],
+      reportsDirectory: './coverage'
+    }
+  }
 })
