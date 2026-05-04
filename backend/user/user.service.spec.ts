@@ -1,12 +1,39 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './user.service';
+import { PrismaService } from '../core/prisma/prisma.service';
+import { KeycloakAdminService } from '../auth/keycloak-admin.service';
 
 describe('UserService', () => {
   let service: UserService;
 
+  const mockPrismaService = {
+    user: {
+      findMany: jest.fn(),
+      create: jest.fn(),
+      findUnique: jest.fn(),
+      delete: jest.fn(),
+      update: jest.fn(),
+    },
+    skinQuestionnaire: {
+      upsert: jest.fn(),
+    },
+  };
+
+  const mockKeycloakAdminService = {};
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [UserService],
+      providers: [
+        UserService,
+        {
+          provide: PrismaService,
+          useValue: mockPrismaService,
+        },
+        {
+          provide: KeycloakAdminService,
+          useValue: mockKeycloakAdminService,
+        },
+      ],
     }).compile();
 
     service = module.get<UserService>(UserService);
