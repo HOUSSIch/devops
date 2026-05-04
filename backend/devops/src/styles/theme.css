@@ -1,0 +1,237 @@
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --font-size-base: 16px;
+  --background: #fbf3fe;
+  --foreground: #1f2937;
+  --card: #ffffff;
+  --card-foreground: #1f2937;
+  --popover: #ffffff;
+  --popover-foreground: #1f2937;
+  --primary: #8b63d3;
+  --primary-foreground: #ffffff;
+  --secondary: #ece2f9;
+  --secondary-foreground: #1f2937;
+  --muted: #f3f4f6;
+  --muted-foreground: #6b7280;
+  --accent: #f9fafb;
+  --accent-foreground: #1f2937;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: rgba(139, 99, 211, 0.2);
+  --input: transparent;
+  --input-background: #ffffff;
+  --switch-background: #d1d5db;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --ring: #8b63d3;
+  --chart-1: #8b63d3;
+  --chart-2: #ec4899;
+  --chart-3: #10b981;
+  --chart-4: #f59e0b;
+  --chart-5: #6366f1;
+  --radius: 0.625rem;
+}
+
+/* Dark Mode - Purple Luxury Theme */
+.dark {
+  --background: #1a0f2e;
+  --foreground: #f3e8ff;
+  --card: #2d1b4e;
+  --card-foreground: #f3e8ff;
+  --popover: #2d1b4e;
+  --popover-foreground: #f3e8ff;
+  --primary: #b89de6;
+  --primary-foreground: #1a0f2e;
+  --secondary: #3d2563;
+  --secondary-foreground: #f3e8ff;
+  --muted: #3d2563;
+  --muted-foreground: #c4b5fd;
+  --accent: #4c3575;
+  --accent-foreground: #f3e8ff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: rgba(184, 157, 230, 0.3);
+  --input: rgba(184, 157, 230, 0.2);
+  --input-background: rgba(61, 37, 99, 0.5);
+  --switch-background: #6d4f9e;
+  --ring: #b89de6;
+  --chart-1: #b89de6;
+  --chart-2: #f472b6;
+  --chart-3: #34d399;
+  --chart-4: #fbbf24;
+  --chart-5: #818cf8;
+}
+
+/* High Contrast Mode */
+.high-contrast {
+  --background: #000000;
+  --foreground: #ffffff;
+  --card: #1a1a1a;
+  --card-foreground: #ffffff;
+  --popover: #1a1a1a;
+  --popover-foreground: #ffffff;
+  --primary: #ffff00;
+  --primary-foreground: #000000;
+  --secondary: #333333;
+  --secondary-foreground: #ffffff;
+  --muted: #333333;
+  --muted-foreground: #cccccc;
+  --accent: #444444;
+  --accent-foreground: #ffffff;
+  --destructive: #ff0000;
+  --destructive-foreground: #ffffff;
+  --border: #ffffff;
+  --input: #ffffff;
+  --input-background: #1a1a1a;
+  --switch-background: #666666;
+  --ring: #ffff00;
+  --chart-1: #ffff00;
+  --chart-2: #00ffff;
+  --chart-3: #00ff00;
+  --chart-4: #ff00ff;
+  --chart-5: #ff8800;
+}
+
+/* Text Size Classes */
+.text-small {
+  --font-size-base: 14px;
+}
+
+.text-medium {
+  --font-size-base: 16px;
+}
+
+.text-large {
+  --font-size-base: 18px;
+}
+
+.text-extra-large {
+  --font-size-base: 20px;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground transition-colors duration-300;
+  }
+
+  html {
+    font-size: var(--font-size-base);
+  }
+
+  h1 {
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  h2 {
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  h3 {
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  h4 {
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  label {
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  button {
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  input {
+    font-weight: var(--font-weight-normal);
+    line-height: 1.5;
+  }
+
+  /* Improve contrast in dark mode */
+  .dark .text-gray-800 {
+    @apply text-gray-100;
+  }
+
+  .dark .text-gray-700 {
+    @apply text-gray-200;
+  }
+
+  .dark .text-gray-600 {
+    @apply text-gray-300;
+  }
+
+  .dark .text-gray-500 {
+    @apply text-gray-400;
+  }
+
+  .dark .bg-white {
+    @apply bg-gray-900;
+  }
+
+  .dark .bg-gray-50 {
+    @apply bg-gray-800;
+  }
+
+  .dark .bg-gray-100 {
+    @apply bg-gray-700;
+  }
+
+  /* High contrast mode improvements */
+  .high-contrast * {
+    border-width: 2px !important;
+  }
+
+  .high-contrast .text-gray-800,
+  .high-contrast .text-gray-700,
+  .high-contrast .text-gray-600 {
+    @apply text-white;
+  }
+
+  .high-contrast .bg-white {
+    @apply bg-black;
+  }
+}
