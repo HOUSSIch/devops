@@ -8,6 +8,12 @@ interface Message {
   timestamp: Date;
 }
 
+interface ReminderContext {
+  title: string;
+  description?: string | null;
+  time?: string | Date | null;
+}
+
 @Injectable()
 export class ChatbotService {
   constructor(
@@ -15,12 +21,7 @@ export class ChatbotService {
     private readonly prisma: PrismaService,
   ) {}
 
-  async processMessage(
-    userId: string,
-    message: string,
-    conversationId?: string,
-  ) {
-    // Get or create conversation
+  async processMessage(userId: string, message: string, conversationId?: string) {
     let conversation = conversationId
       ? await this.prisma.conversation.findFirst({
           where: { id: conversationId, userId },
@@ -36,32 +37,27 @@ export class ChatbotService {
       });
     }
 
-    // Parse existing messages
     const messages: Message[] = (conversation.messages as any) || [];
 
-    // Add user message
     const userMessage: Message = {
       role: 'user',
       content: message,
       timestamp: new Date(),
     };
+
     messages.push(userMessage);
 
-    // Get user context (latest analysis if available)
     const userContext = await this.getUserContext(userId);
-
-    // Generate AI response
     const aiResponse = await this.generateResponse(message, messages, userContext);
 
-    // Add AI response
     const assistantMessage: Message = {
       role: 'assistant',
       content: aiResponse,
       timestamp: new Date(),
     };
+
     messages.push(assistantMessage);
 
-    // Update conversation
     await this.prisma.conversation.update({
       where: { id: conversation.id },
       data: {
@@ -85,7 +81,7 @@ export class ChatbotService {
     const contextPrompt = this.buildContextPrompt(userContext);
     const historyPrompt = this.buildHistoryPrompt(conversationHistory);
 
-   const systemPrompt = `You are DeepSkyn AI, a skincare assistant.
+    const systemPrompt = `You are DeepSkyn AI, a skincare assistant.
 
 You MUST use the user's stored skincare questionnaire and latest skin analysis if available.
 If allergies, sensitivities, symptoms, affected areas, or medical history are present, you must take them into account in your answer.
@@ -116,35 +112,33 @@ Keep responses concise but informative. If you don't have specific user data, sa
   }
 
   private async getUserContext(userId: string) {
-  const latestAnalysis = await this.prisma.analysis.findFirst({
-    where: { userId },
-    orderBy: { createdAt: 'desc' },
-  });
+    const latestAnalysis = await this.prisma.analysis.findFirst({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+    });
 
-  const reminders = await this.prisma.reminder.findMany({
-    where: { userId },
-  });
+    const reminders = await this.prisma.reminder.findMany({
+      where: { userId },
+    });
 
-  const questionnaire = await this.prisma.skinQuestionnaire.findUnique({
-    where: { userId },
-  });
+    const questionnaire = await this.prisma.skinQuestionnaire.findUnique({
+      where: { userId },
+    });
 
-  return {
-    latestAnalysis,
-    reminders,
-    questionnaire,
-  };
-}
+    return {
+      latestAnalysis,
+      reminders,
+      questionnaire,
+    };
+  }
 
   private buildContextPrompt(context: any): string {
-
-
     let prompt = '';
 
     if (context.questionnaire) {
-  const q = context.questionnaire;
+      const q = context.questionnaire;
 
-  prompt += `User's saved skincare questionnaire:
+      prompt += `User's saved skincare questionnaire:
 - Skin Type: ${q.skinType || 'Not provided'}
 - Sensitivity Level: ${q.sensitivityLevel || 'Not provided'}
 - Symptoms: ${Array.isArray(q.symptoms) && q.symptoms.length > 0 ? q.symptoms.join(', ') : 'None provided'}
@@ -162,14 +156,15 @@ Keep responses concise but informative. If you don't have specific user data, sa
 - Water Intake: ${q.waterIntake || 'Not provided'}
 
 `;
-} else {
-  prompt += `User questionnaire: No questionnaire data available.
+    } else {
+      prompt += `User questionnaire: No questionnaire data available.
 
 `;
-}
+    }
 
     if (context.latestAnalysis) {
       const analysis = context.latestAnalysis;
+
       prompt += `User's latest skin analysis:
 - Skin Type: ${analysis.skinType}
 - Health Score: ${analysis.healthScore}/100
@@ -182,10 +177,11 @@ Keep responses concise but informative. If you don't have specific user data, sa
 `;
     }
 
-
     if (context.reminders && context.reminders.length > 0) {
       prompt += `User's current reminders/routines:
-${context.reminders.map(r => `- ${r.title}: ${r.description} (${r.time})`).join('\n')}
+${context.reminders
+  .map((r: ReminderContext) => `- ${r.title}: ${r.description || ''} (${r.time || ''})`)
+  .join('\n')}
 
 `;
     }
@@ -194,11 +190,12 @@ ${context.reminders.map(r => `- ${r.title}: ${r.description} (${r.time})`).join(
   }
 
   private buildHistoryPrompt(history: Message[]): string {
-    if (history.length <= 2) return ''; // Skip if only current messages
+    if (history.length <= 2) return '';
 
-    const recentHistory = history.slice(-6); // Last 3 exchanges
+    const recentHistory = history.slice(-6);
+
     return `Recent conversation:
-${recentHistory.map(msg => `${msg.role}: ${msg.content}`).join('\n')}
+${recentHistory.map((msg) => `${msg.role}: ${msg.content}`).join('\n')}
 
 `;
   }
