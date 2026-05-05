@@ -15,4 +15,4 @@ ENV KC_HTTP_ENABLED=true
 EXPOSE 10000
 
 ENTRYPOINT ["/bin/sh", "-c"]
-CMD ["/opt/keycloak/bin/kc.sh start-dev --optimized --http-host=0.0.0.0 --http-port=${PORT:-10000}"]
+CMD ["/opt/keycloak/bin/kc.sh start-dev --http-host=0.0.0.0 --http-port=${PORT:-10000}"]
