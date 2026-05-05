@@ -1,7 +1,8 @@
 FROM quay.io/keycloak/keycloak:26.2
 
-EXPOSE 8080
+ENV KC_BOOTSTRAP_ADMIN_USERNAME=admin
+ENV KC_BOOTSTRAP_ADMIN_PASSWORD=admin123
 
-ENTRYPOINT ["/opt/keycloak/bin/kc.sh"]
+EXPOSE 10000
 
-CMD ["start-dev", "--http-port=${PORT}", "--http-host=0.0.0.0"]
+CMD /opt/keycloak/bin/kc.sh start-dev --http-port=10000 --http-host=0.0.0.0
