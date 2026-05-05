@@ -1,8 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// This is your Prisma schema file for Railway deployment
+// Learn more: https://pris.ly/d/prisma-schema
 
 generator client {
   provider = "prisma-client-js"
@@ -10,6 +7,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -40,29 +38,28 @@ enum Role {
 
 model Photo {
   id        String   @id @default(uuid())
-  url       String // The Cloudinary URL
-  publicId  String // The Cloudinary Public ID
+  url       String
+  publicId  String
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 }
 
 model Analysis {
   id     String @id @default(uuid())
   userId String
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  skinType    String // Oily, Dry, etc.
-  healthScore Int // 0-100
+  skinType    String
+  healthScore Int
   skinAge     Int
   summary     String @db.Text
 
-  // Storing complex objects as JSON
-  concerns       Json // List of issues found
+  concerns       Json
   morningRoutine Json
   eveningRoutine Json
 
-  imageUrl  String // Reference to the photo used
+  imageUrl  String
   createdAt DateTime @default(now())
 }
 
@@ -92,29 +89,29 @@ enum SubscriptionTier {
 model Article {
   id        String   @id @default(uuid())
   title     String
-  category  String   // ingredients, routines, concerns, seasonal
+  category  String
   readTime  Int
   rating    Float
   image     String
   summary   String   @db.Text
-  content   String[] // Array of paragraphs
+  content   String[]
   createdAt DateTime @default(now())
 }
 
 model Video {
   id        String   @id @default(uuid())
   title     String
-  duration  String   // e.g., "08:24"
+  duration  String
   thumbnail String
   category  String
-  url       String   // Link to the actual video
+  url       String
 }
 
 model Conversation {
   id        String   @id @default(uuid())
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  messages  Json     // Array of message objects with role and content
+  messages  Json
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -151,9 +148,9 @@ model Order {
   shipping  Float       @default(0)
   tax       Float       @default(0)
   trackingNumber String?
-  shippingAddress Json?  // {name, street, city, state, zip, phone}
-  billingAddress  Json?  // {name, street, city, state, zip}
-  paymentMethod   Json?  // {brand, last4, type}
+  shippingAddress Json?
+  billingAddress  Json?
+  paymentMethod   Json?
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
 }
@@ -204,4 +201,3 @@ model SkinQuestionnaire {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }
-
