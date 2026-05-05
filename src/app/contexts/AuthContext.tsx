@@ -29,6 +29,9 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// ✅ URL du backend Railway (à remplacer par votre vraie URL)
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || "https://devops-backend-production.up.railway.app";
+
 function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
   return new Promise((resolve, reject) => {
     const timer = window.setTimeout(() => {
@@ -70,13 +73,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setRoles(realmRoles);
   }, []);
 
+  // ✅ Correction : Utilise BACKEND_URL au lieu de localhost
   const syncUserToBackend = useCallback(async () => {
     if (!keycloak.authenticated || !keycloak.token) return;
 
     try {
-      const response = await fetch("http://localhost:3000/users/sync-me", {
+      console.log("🔄 Syncing user with backend:", BACKEND_URL);
+      
+      const response = await fetch(`${BACKEND_URL}/users/sync-me`, {
         method: "POST",
         headers: {
+          "Content-Type": "application/json",
           Authorization: `Bearer ${keycloak.token}`,
         },
       });
@@ -85,16 +92,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const text = await response.text();
         throw new Error(text || "sync-me failed");
       }
+      
+      console.log("✅ User synced successfully");
     } catch (e) {
-      console.error("sync-me failed:", e);
+      console.error("❌ sync-me failed:", e);
     }
   }, []);
 
+  // ✅ Correction : Utilise BACKEND_URL au lieu de localhost
   const syncProfile = useCallback(async () => {
     if (!keycloak.authenticated || !keycloak.token) return;
 
     try {
-      const response = await fetch("http://localhost:3000/users/me", {
+      console.log("🔄 Fetching user profile from:", BACKEND_URL);
+      
+      const response = await fetch(`${BACKEND_URL}/users/me`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${keycloak.token}`,
@@ -108,8 +120,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       setSubscriptionTier((data?.subscriptionTier || "FREE") as SubscriptionTier);
+      console.log("✅ Profile fetched, subscription tier:", data?.subscriptionTier);
     } catch (e) {
-      console.error("syncProfile failed:", e);
+      console.error("❌ syncProfile failed:", e);
     }
   }, []);
 
@@ -121,9 +134,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       syncFromKeycloak();
 
-      // IMPORTANT:
-      // ici on ne rappelle PAS sync-me pour éviter d'écraser des données
-      // avec un vieux token ou des claims non encore rafraîchies.
       if (keycloak.authenticated) {
         await syncProfile();
       }
@@ -141,7 +151,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const initAuth = async () => {
       try {
-        console.log("Starting Keycloak init...");
+        console.log("🚀 Starting Keycloak init...");
+        console.log("🔗 Keycloak URL:", keycloak.endpoint);
 
         await withTimeout(
           keycloak.init({
@@ -154,20 +165,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           8000,
         );
 
-        console.log("Keycloak init success");
+        console.log("✅ Keycloak init success");
 
         if (!mounted) return;
 
         syncFromKeycloak();
 
         if (keycloak.authenticated) {
-          // sync initiale une seule fois
+          console.log("👤 User is authenticated");
+          console.log("📋 Roles from token:", roles);
+          
           if (!didInitialSyncRef.current) {
             await syncUserToBackend();
             didInitialSyncRef.current = true;
           }
 
           await syncProfile();
+        } else {
+          console.log("👤 User is not authenticated");
         }
 
         interval = window.setInterval(() => {
@@ -177,10 +192,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }, 20000);
 
         keycloak.onTokenExpired = () => {
+          console.log("🔄 Token expired, refreshing...");
           refreshNow();
         };
       } catch (error) {
-        console.error("Keycloak init failed or timed out:", error);
+        console.error("❌ Keycloak init failed or timed out:", error);
 
         if (!mounted) return;
 
@@ -191,7 +207,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setSubscriptionTier("FREE");
       } finally {
         if (mounted) {
-          console.log("Setting isInitialized = true");
+          console.log("✅ Auth provider initialized");
           setIsInitialized(true);
         }
       }
@@ -203,7 +219,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       mounted = false;
       if (interval) window.clearInterval(interval);
     };
-  }, [refreshNow, syncFromKeycloak, syncProfile, syncUserToBackend]);
+  }, [refreshNow, syncFromKeycloak, syncProfile, syncUserToBackend, roles]);
 
   const isAdmin = roles.includes("admin");
 
